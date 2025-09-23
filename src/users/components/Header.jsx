@@ -1,46 +1,55 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faInstagram, faTwitter, faFacebook } from "@fortawesome/free-brands-svg-icons";
-import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
+import { faFacebook, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons'
+import { faCircleUser } from '@fortawesome/free-regular-svg-icons'
+import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
+
 
 function Header() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <header className="bg-white shadow px-6 py-3 flex items-center justify-between">
-      {/* Left: Logo */}
-      <div className="flex items-center space-x-2">
-        <img
-          src="/logo.png"
-          alt="logo"
-          className="w-8 h-8"
-        />
-      </div>
+    <div>
 
-      {/* Center: Title */}
-      <h1 className="text-4xl font-bold tracking-wide">BOOK STORE</h1>
+      <nav className='flex items-center  md:justify-between p-4'>
+        <div>
+          <img src="./logo.png" alt="" width={"40px"} />
+        </div>
+        <div className='text-4xl font-bold ms-3'>BOOKSTORE</div>
+        <div className='hidden md:flex items-center justify-center '>
+          <FontAwesomeIcon icon={faInstagram} />
+          <FontAwesomeIcon className='ms-3' icon={faTwitter} />
+          <FontAwesomeIcon className='ms-3' icon={faFacebook} />
+          {/* login */}
+          <Link to='/login'><FontAwesomeIcon className='ms-3' icon={faCircleUser} style={{ height: "25px", width: "25px" }} /></Link>
+        </div>
+      </nav>
 
-      {/* Right: Social Icons + Profile */}
-      <div className="flex items-center space-x-4">
-        <FontAwesomeIcon
-          icon={faInstagram}
-          className="w-5 h-5 cursor-pointer hover:text-pink-500"
-        />
-        <FontAwesomeIcon
-          icon={faTwitter}
-          className="w-5 h-5 cursor-pointer hover:text-blue-400"
-        />
-        <FontAwesomeIcon
-          icon={faFacebook}
-          className="w-5 h-5 cursor-pointer hover:text-blue-600"
-        />
+      {/* resposive code for mobile */}
+      <nav className='bg-gray-900'>
+        <div className='md:hidden flex items-center justify-between p-3 text-white'>
+          <FontAwesomeIcon icon={faBars} onClick={() => setIsOpen(!isOpen)} />
+          <Link to='/login'><FontAwesomeIcon className='ms-3' icon={faCircleUser} style={{ height: "25px", width: "25px" }} /></Link>
+        </div>
+        {isOpen && (
+          <div className='flex flex-col  justify-center bg-cyan-900 text-white md:hidden p-3'>
+            <Link className='mb-2' to={'/'}>Home</Link>
+            <Link className='mb-2' to={'/all-books'}>Books</Link>
+            <Link className='mb-2' to={'/Careers'}>Careers</Link>
+            <Link className='mb-2' to={'/Contact'}>Contact</Link>
+          </div>
+        )}
+        <nav className='hidden md:flex items-center justify-center  p-3 text-white'>
+          <Link to={'/'}>Home</Link>
+          <Link className='ms-4 ' to={'/all-books'}>Books</Link>
+          <Link className='ms-4 ' to={'/Careers'}>Careers</Link>
+          <Link className='ms-4' to={'/Contact'}>Contact</Link>
+        </nav>
+      </nav>
 
-        {/* Profile Avatar (using FA user-circle) */}
-        <FontAwesomeIcon
-          icon={faUserCircle}
-          className="w-7 h-7 cursor-pointer text-gray-600"
-        />
-      </div>
-    </header>
-  );
+    </div>
+  )
 }
 
-export default Header;
+export default Header

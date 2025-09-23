@@ -1,11 +1,12 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faInstagram,faTwitter,faFacebook,faLinkedin,} from "@fortawesome/free-brands-svg-icons";
+import { faInstagram, faTwitter, faFacebook, faLinkedin, } from "@fortawesome/free-brands-svg-icons";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 function Footer() {
   return (
-    <footer className="bg-gray-900 text-white mt-60">
+    <footer className="bg-gray-900 text-white ">
+
       {/* Top Section */}
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-6 py-10">
         {/* About Us */}
@@ -25,11 +26,11 @@ function Footer() {
           <p className="text-gray-400 text-sm mb-3">
             Stay updated with our latest trends
           </p>
-          <div className="flex">
+          <div className="flex bg-white">
             <input
               type="email"
               placeholder="Enter your email"
-              className="px-3 py-2 w-full text-black rounded-l"
+              className="px-10 py-2 w-full text-black rounded-3"
             />
             <button className="bg-yellow-400 px-4 rounded-r">
               <FontAwesomeIcon icon={faArrowRight} />
