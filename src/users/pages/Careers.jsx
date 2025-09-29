@@ -1,10 +1,12 @@
-import React from "react";
+import React ,{useState}from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import { faLocationDot,faXmark } from "@fortawesome/free-solid-svg-icons";
 import Header from '../components/Header'
 import Footer from '../../components/Footer'
 
 function Careers() {
+    const [modalStatus, setModalstatus] = useState(false)
+  
   return (
 
     <>
@@ -38,7 +40,7 @@ function Careers() {
           {/* Title + Button */}
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Job Title</h2>
-            <button className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 flex items-center gap-2">
+            <button onClick={()=>setModalstatus(true)} className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 flex items-center gap-2">
               Apply <span>↗</span>
             </button>
           </div>
@@ -68,6 +70,54 @@ function Careers() {
           </p>
         </div>
       </div>
+
+      {/* moadl */}
+           {/* Modal */}
+      {
+        modalStatus && (
+          <div className="fixed inset-0 bg-gray-500/75 flex justify-center items-center z-50">
+            <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl">
+              {/* Header */}
+              <div className="bg-slate-900 text-white flex justify-between items-center p-3 rounded-t-lg">
+                <h1 className="text-lg font-semibold">Application Form</h1>
+                <button onClick={() => setModalStatus(false)}>
+                  <FontAwesomeIcon icon={faXmark} className="text-white hover:text-slate-300" />
+                </button>
+              </div>
+               {/* Form */}
+              <form className="p-6 space-y-4">
+                {/* Inputs */}
+                <div className="md:grid grid-cols-2 gap-4">
+                  <input type="text" placeholder="Full name" className="w-full border mb-3 rounded px-3 py-2" />
+                  <input type="text" placeholder="Qualification" className="w-full border mb-3 rounded px-3 py-2" />
+                  <input type="email" placeholder="Email ID" className="w-full border mb-3 rounded px-3 py-2" />
+                  <input type="tel" placeholder="Phone" className="w-full border mb-3 rounded px-3 py-2" />
+                  {/* Cover Letter */}
+                  <div className='col-span-2'>
+                    <textarea placeholder="Cover Letter" rows="4" className="w-full border rounded px-3 py-2 ">
+                    </textarea></div>
+                  {/* File Upload */}
+                  <div className='col-span-2'>
+                    <label htmlFor="">Resume</label>
+                    <input type="file" id='' name='' className='w-full border rounded file:p-1 file:bg-gray-200 ' />
+                  </div>
+                </div>
+                   {/* Buttons */}
+                <div className="flex justify-end space-x-4 pt-4">
+                  <button type="reset" className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-6 py-2 rounded">
+                    Reset
+                  </button>
+                  <button type="submit" className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded">
+                    Submit
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+
+
       <Footer />
     </>
   );

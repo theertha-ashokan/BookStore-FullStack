@@ -50,10 +50,10 @@ function ViewBook() {
       {/* moadl */}
       {
         modalStatus &&
-        <div className='relative z-10 ' onClick={() => setModalstatus(false)}>
+        <div className='relative z-10 overflow-y-auto ' onClick={() => setModalstatus(false)}>
           <div className="bg-gray-500/75 fixed inset-0 transition-opacity">
             <div className="flex justify-center items-center min-h-screen">
-              <div style={{ height: '550px', width: '900px' }} className='bg-white'>
+              <div  className='bg-white rounded-2xl md:w-250 w-100 '>
                 <div className='bg-black text-white flex justify-between items-center p-3'>
                   <h3>Books Images</h3>
                   <FontAwesomeIcon onClick={() => setModalstatus(false)} icon={faXmark} />
