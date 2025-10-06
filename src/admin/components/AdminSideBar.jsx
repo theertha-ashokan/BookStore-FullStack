@@ -20,32 +20,32 @@ function AdminSideBar() {
      {/* side bar redirection-link */}
              <div className={listStatus ? 'block mt-2' : 'md:block hidden mt-2'}>
         <div className="mt-3 flex items-center gap-x-2">
-          <Link to={'/'}>
-              <FontAwesomeIcon icon={faBook} />
-              Home
-            </Link>
-        </div>
+  <Link to={'/'} className="flex items-center gap-x-2">
+    <FontAwesomeIcon icon={faBook} />
+    <span>Home</span>
+  </Link>
+</div>
 
-        <div className="mt-3 flex items-center gap-x-2">
-          <Link to={'/all-books'}>
-              <FontAwesomeIcon icon={faBook} />
-              AllBooks
-            </Link>
-        </div>
+<div className="mt-3 flex items-center gap-x-2">
+  <Link to={'/all-books'} className="flex items-center gap-x-2">
+    <FontAwesomeIcon icon={faBook} />
+    <span>AllBooks</span>
+  </Link>
+</div>
 
-        <div className="mt-3 flex items-center gap-x-2">
-          <Link to={'/Careers'}>
-              <FontAwesomeIcon icon={faBagShopping} />
-              Careers
-            </Link>
-        </div>
+<div className="mt-3 flex items-center gap-x-2">
+  <Link to={'/Careers'} className="flex items-center gap-x-2">
+    <FontAwesomeIcon icon={faBagShopping} />
+    <span>Careers</span>
+  </Link>
+</div>
 
-        <div className="mt-3 flex items-center gap-x-2">
-          <Link to={'/admin-settings'}>
-              <FontAwesomeIcon icon={faScrewdriverWrench} />
-              Settings
-            </Link>
-        </div>
+<div className="mt-3 flex items-center gap-x-2">
+  <Link to={'/admin-settings'} className="flex items-center gap-x-2">
+    <FontAwesomeIcon icon={faScrewdriverWrench} />
+    <span>Settings</span>
+  </Link>
+</div>
 
       </div>
     </div>

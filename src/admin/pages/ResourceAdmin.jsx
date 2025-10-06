@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import AdminHeader from '../components/AdminHeader'
 import Footer from '../../components/Footer'
-import AdminSidebar from '../components/AdminSidebar'
+import AdminSidebar from '../components/AdminSideBar'
 import { Link } from 'react-router-dom'
 function ResourceAdmin() {
   const [bookListStatus,setBookListStatus] = useState(true)

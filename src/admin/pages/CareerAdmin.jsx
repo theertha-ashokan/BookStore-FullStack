@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import AdminHeader from '../components/AdminHeader';
-import AdminSidebar from '../components/AdminSidebar';
+import AdminSidebar from '../components/AdminSideBar';
 import Footer from '../../components/Footer';
 import { Link, Links } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

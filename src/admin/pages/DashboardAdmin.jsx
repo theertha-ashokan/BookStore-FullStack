@@ -1,6 +1,6 @@
 import React from 'react'
 import AdminHeader from '../components/AdminHeader'
-import AdminSidebar from '../components/AdminSidebar'
+import AdminSidebar from '../components/AdminSideBar'
 import Footer from '../../components/Footer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBook, faUser, faUsers } from '@fortawesome/free-solid-svg-icons'
