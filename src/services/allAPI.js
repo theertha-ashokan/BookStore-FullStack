@@ -6,10 +6,16 @@ import SERVERURL from "./serverURL"
 // register api  - called by auth component by register button,
 //  clicked,content-type :"Application/json"
   export const registerAPI = async (reqBody)=>{
+   console.log(reqBody);
+   
      return await  commonAPI("POST",`${SERVERURL}/register`,reqBody)
   }
 
 // login api
+export const loginAPI = async (reqBody)=>{
+  return await  commonAPI("POST",`${SERVERURL}/login`,reqBody)
+}
+
 // homepage books api
 // all caree api
 

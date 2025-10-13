@@ -1,4 +1,6 @@
+import axios from "axios"
 import { data } from "react-router-dom"
+
 
 const commonAPI = async (httpRequest,url,reqBody,reqHeader)=>{
   
