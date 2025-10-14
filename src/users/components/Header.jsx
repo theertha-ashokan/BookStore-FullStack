@@ -2,12 +2,23 @@ import { faFacebook, faInstagram, faTwitter } from '@fortawesome/free-brands-svg
 import { faCircleUser } from '@fortawesome/free-regular-svg-icons'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const [token,setToken] = useState("")
+  const [userDp,setUserDp] = useState("")
+
+  useEffect(()=>{
+    if(sessionStorage.getItem("token")){
+      const token = sessionStorage.getItem("token")
+      setToken(token)
+      const user = JSON.parse(sessionStorage.getItem("user"))
+      setUserDp(user.profile)
+    }
+  },[])
 
   return (
     <div>
@@ -21,11 +32,21 @@ function Header() {
           <FontAwesomeIcon icon={faInstagram} />
           <FontAwesomeIcon className='ms-3' icon={faTwitter} />
           <FontAwesomeIcon className='ms-3' icon={faFacebook} />
+
           {/* login */}
-          <Link to='/login'><FontAwesomeIcon className='ms-3' icon={faCircleUser} style={{ height: "25px", width: "25px" }} /></Link>
+         { !token?
+          <Link to={'/login'}><FontAwesomeIcon className='ms-3' icon={faCircleUser} style={{ height: "25px", width: "25px" }} /></Link>
+          :
+          <div>
+            <button>
+               <img width={'40px'} height={'40px'} src={userDp==""?"https://static.vecteezy.com/system/resources/previews/008/302/462/original/eps10-grey-user-icon-or-logo-in-simple-flat-trendy-modern-style-isolated-on-white-background-free-vector.jpg":""} alt="img" />
+            </button>
+          </div>
+         }
+
+         
         </div>
       </nav>
-
       {/* resposive code for mobile */}
       <nav className='bg-gray-900'>
         <div className='md:hidden flex items-center justify-between p-3 text-white'>

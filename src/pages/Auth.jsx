@@ -3,7 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ToastContainer ,toast} from 'react-toastify'
-import { registerAPI } from '../services/allAPI'
+import { registerAPI ,loginAPI} from '../services/allAPI'
+import { GoogleOAuthProvider ,GoogleLogin} from '@react-oauth/google';
+
 
 
 function Auth({ register }) {
@@ -33,7 +35,8 @@ function Auth({ register }) {
           setUserDetails({username :"",email:"",password:""})
           navigate('/login')
         }else{
-          console.log(result);
+          toast.warning("something went wrong..!!!")
+          setUserDetails({username: "", email: "", password: "" })
           
         } 
       }catch(err){
@@ -54,12 +57,27 @@ function Auth({ register }) {
         const result = await loginAPI(userDetails)
         console.log(result);
         if(result.status == 200){
+          toast.success("Login Successfully...!!")
+          sessionStorage.setItem("user",JSON.stringify(result.data.user))
+          sessionStorage.setItem("token",result.data.token)
+          setTimeout(() => {
+            if(result.data.user.role=="admin"){
+              navigate('/admin-dashboard')
+            }else{
+              navigate('/')
+            } 
+          }, 2500);
+          
+        }else if(result.status == 401){
+          toast.warning(result.response.data)
+          setUserDetails({username: "", email: "", password: "" })
           
         }else if(result.status == 404){
-          
+          toast.warning(result.response.data)
+          setUserDetails({username: "", email: "", password: "" })
         }else{
-          console.log(result);
-          
+          toast.warning("something went wrong..!!!")
+          setUserDetails({username: "", email: "", password: "" })
         }
         
       }catch(err){
@@ -111,12 +129,33 @@ function Auth({ register }) {
                 }
               </div>
               {/* goole authentication */}
+                 <div className='my-5 text-center'>
+                     {!register && <p>-------------------------------------or-------------------------------------</p>}
+                     {
+                      !register &&
+                      <div className='my-5 text-center'>
+                        <GoogleOAuthProvider>
+                          <GoogleLogin
+    onSuccess={credentialResponse => {
+      console.log(credentialResponse);
+    }}
+    onError={() => {
+      console.log('Login Failed');
+    }}
+    useOneTap
+  />
+                        </GoogleOAuthProvider>
+
+                      </div>
+                     }
+                 </div>
+                
+              
               {
                 register ?
                   <p className='text-blue-600'>Are you already a user ? <Link to={'/login'} className='underline'>Login</Link> </p>
                   :
                   <p className='text-blue-600'>Are you a new user ? <Link to={'/register'} className='underline'>Register</Link></p>
-
               }
             </form>
 
