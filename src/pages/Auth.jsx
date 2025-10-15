@@ -2,9 +2,10 @@ import { faEye, faEyeSlash, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ToastContainer ,toast} from 'react-toastify'
-import { registerAPI ,loginAPI} from '../services/allAPI'
-import { GoogleOAuthProvider ,GoogleLogin} from '@react-oauth/google';
+import { ToastContainer, toast } from 'react-toastify'
+import { registerAPI, loginAPI, googleLoginAPI } from '../services/allAPI'
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode"
 
 
 
@@ -15,7 +16,7 @@ function Auth({ register }) {
   // console.log(userDetails);
 
   // register
-  const handleRegister = async() => {
+  const handleRegister = async () => {
     console.log("Inside handleregister");
     const { username, email, password } = userDetails
     if (!username || !email || !password)
@@ -23,68 +24,98 @@ function Auth({ register }) {
 
     else {
       // toast.success("Proceed to api call")
-      try{
+      try {
         const result = await registerAPI(userDetails)
         console.log(result);
-        if(result.status==200){
+        if (result.status == 200) {
           toast.success("Registered successfully!!!! please login.")
-          setUserDetails({username :"",email:"",password:""})
+          setUserDetails({ username: "", email: "", password: "" })
           navigate('/login')
-        }else if(result.status==409){
+        } else if (result.status == 409) {
           toast.warning(result.response.data)
-          setUserDetails({username :"",email:"",password:""})
+          setUserDetails({ username: "", email: "", password: "" })
           navigate('/login')
-        }else{
+        } else {
           toast.warning("something went wrong..!!!")
-          setUserDetails({username: "", email: "", password: "" })
-          
-        } 
-      }catch(err){
-        console.log(err); 
+          setUserDetails({ username: "", email: "", password: "" })
+
+        }
+      } catch (err) {
+        console.log(err);
       }
     }
 
   }
 
-// login
- const handleLogin = async()=>{
-    const {email,password} = userDetails
-    if(!email || !password){
+  // login
+  const handleLogin = async () => {
+    const { email, password } = userDetails
+    if (!email || !password) {
       toast.info("Please fill the form completely")
-    }else{
+    } else {
       //toast.success("Proceed to API CALL")
-      try{
+      try {
         const result = await loginAPI(userDetails)
         console.log(result);
-        if(result.status == 200){
+        if (result.status == 200) {
           toast.success("Login Successfully...!!")
-          sessionStorage.setItem("user",JSON.stringify(result.data.user))
-          sessionStorage.setItem("token",result.data.token)
+          sessionStorage.setItem("user", JSON.stringify(result.data.user))
+          sessionStorage.setItem("token", result.data.token)
           setTimeout(() => {
-            if(result.data.user.role=="admin"){
+            if (result.data.user.role == "admin") {
               navigate('/admin-dashboard')
-            }else{
+            } else {
               navigate('/')
-            } 
+            }
           }, 2500);
-          
-        }else if(result.status == 401){
+
+        } else if (result.status == 401) {
           toast.warning(result.response.data)
-          setUserDetails({username: "", email: "", password: "" })
-          
-        }else if(result.status == 404){
+          setUserDetails({ username: "", email: "", password: "" })
+
+        } else if (result.status == 404) {
           toast.warning(result.response.data)
-          setUserDetails({username: "", email: "", password: "" })
-        }else{
+          setUserDetails({ username: "", email: "", password: "" })
+        } else {
           toast.warning("something went wrong..!!!")
-          setUserDetails({username: "", email: "", password: "" })
+          setUserDetails({ username: "", email: "", password: "" })
         }
-        
-      }catch(err){
+
+      } catch (err) {
         console.log(err);
-        
+
       }
-    } 
+    }
+  }
+
+  // google  login
+  const handleGoogleLogin = async (credentialResponse) => {
+    console.log("inside handleGoogleLogin");
+
+    const credential = credentialResponse.credential
+    const details = jwtDecode(credential)
+    console.log(details);
+    try {
+      const result = await googleLoginAPI({ username: details.name, email: details.email, password: 'googlepswd', profile: details.picture })
+      console.log(result);
+      if (result.status == 200) {
+        toast.success("Login successfully...")
+        sessionStorage.setItem("user", JSON.stringify(result.data.user))
+        sessionStorage.setItem("token", result.data.token)
+        setTimeout(() => {
+          if (result.data.user.role == "admin") {
+            navigate('/admin-dashboard')
+          } else {
+            navigate('/')
+          }
+        }, 2500);
+      }else{
+         toast.warning("something went wrong..!!!")
+      }
+    }
+    catch (err) {
+      console.log(err);
+    }
   }
 
   return (
@@ -95,7 +126,7 @@ function Auth({ register }) {
           <h1 className='text-3xl text-white font-bold'>BOOK STORE</h1>
           <div className=" text-center text-white bg-black p-5 my-5 ">
 
-            <div style={{ width: "90px", height: "90px", borderRadius: '50%' ,margin: "0 auto" }}
+            <div style={{ width: "90px", height: "90px", borderRadius: '50%', margin: "0 auto" }}
               className='text-center border mb-5 flex items-center justify-center'>
               <FontAwesomeIcon icon={faUser} className='text-3xl' />
             </div>
@@ -129,28 +160,29 @@ function Auth({ register }) {
                 }
               </div>
               {/* goole authentication */}
-                 <div className='my-5 text-center'>
-                     {!register && <p>-------------------------------------or-------------------------------------</p>}
-                     {
-                      !register &&
-                      <div className='my-5 text-center'>
-                        <GoogleOAuthProvider>
-                          <GoogleLogin
-    onSuccess={credentialResponse => {
-      console.log(credentialResponse);
-    }}
-    onError={() => {
-      console.log('Login Failed');
-    }}
-    useOneTap
-  />
-                        </GoogleOAuthProvider>
+              <div className='my-5 text-center'>
+                {!register && <p>-------------------------------------or-------------------------------------</p>}
+                {
+                  !register &&
+                  <div className='my-5 text-center flex justify-center w-full'>
 
-                      </div>
-                     }
-                 </div>
-                
-              
+                    <GoogleLogin
+                      onSuccess={credentialResponse => {
+                        console.log(credentialResponse);
+                        handleGoogleLogin(credentialResponse)
+                      }}
+                      onError={() => {
+                        console.log('Login Failed');
+                        useOneTap
+                      }}
+                    />
+
+
+                  </div>
+                }
+              </div>
+
+
               {
                 register ?
                   <p className='text-blue-600'>Are you already a user ? <Link to={'/login'} className='underline'>Login</Link> </p>
@@ -173,7 +205,7 @@ function Auth({ register }) {
         draggable
         pauseOnHover
         theme="colored"
-        
+
       />
 
     </div>

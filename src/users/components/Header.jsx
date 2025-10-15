@@ -1,15 +1,17 @@
 import { faFacebook, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons'
-import { faCircleUser } from '@fortawesome/free-regular-svg-icons'
-import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { faAddressCard, faCircleUser } from '@fortawesome/free-regular-svg-icons'
+import { faBars, faPowerOff } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [token,setToken] = useState("")
   const [userDp,setUserDp] = useState("")
+  const [dropDownStatus,setDropDownStatus] =useState(false)
+  const navigate = useNavigate()
 
   useEffect(()=>{
     if(sessionStorage.getItem("token")){
@@ -19,6 +21,12 @@ function Header() {
       setUserDp(user.profile)
     }
   },[])
+
+  // logout
+  const logout = ()=>{
+    sessionStorage.clear()
+    navigate('/')
+  }
 
   return (
     <div>
@@ -37,10 +45,23 @@ function Header() {
          { !token?
           <Link to={'/login'}><FontAwesomeIcon className='ms-3' icon={faCircleUser} style={{ height: "25px", width: "25px" }} /></Link>
           :
-          <div>
-            <button>
-               <img width={'40px'} height={'40px'} src={userDp==""?"https://static.vecteezy.com/system/resources/previews/008/302/462/original/eps10-grey-user-icon-or-logo-in-simple-flat-trendy-modern-style-isolated-on-white-background-free-vector.jpg":""} alt="img" />
-            </button>
+          <div className='relative inline-block text-left'>
+           
+              <button onClick={()=>setDropDownStatus(!dropDownStatus)} className=' bg-white px-3 py-2 text-sm  text-gray-900 shadow-xs hover:bg-gray-50'>
+                 <img width={'40px'} height={'40px'} style={{borderRadius:'50%'}} className='mx-2' src={userDp==""?"https://static.vecteezy.com/system/resources/previews/008/302/462/original/eps10-grey-user-icon-or-logo-in-simple-flat-trendy-modern-style-isolated-on-white-background-free-vector.jpg":""} alt="img" />
+              </button>
+                
+              {
+                dropDownStatus &&
+                <div className='absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black1/5 focus:outline-hidden'>
+                <div className="py-1">
+                  <Link className='block px-4 py-2 text-sm text-gray-700' to={'/profile'}> <p> <FontAwesomeIcon className='me-2' icon={faAddressCard}/>Profile
+                  </p> </Link>
+                  <button onClick={logout} className='block px-4 py-2 text-sm text-gray-700'> <FontAwesomeIcon className='me-2' icon={faPowerOff}/>Logout</button>
+                </div>
+              </div>
+              }
+
           </div>
          }
 
