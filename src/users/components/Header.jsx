@@ -20,11 +20,14 @@ function Header() {
       const user = JSON.parse(sessionStorage.getItem("user"))
       setUserDp(user.profile)
     }
-  },[])
+  },[token])
 
   // logout
   const logout = ()=>{
     sessionStorage.clear()
+    setToken("")
+    setUserDp("")
+    setDropDownStatus(false)
     navigate('/')
   }
 
@@ -47,8 +50,8 @@ function Header() {
           :
           <div className='relative inline-block text-left'>
            
-              <button onClick={()=>setDropDownStatus(!dropDownStatus)} className=' bg-white px-3 py-2 text-sm  text-gray-900 shadow-xs hover:bg-gray-50'>
-                 <img width={'40px'} height={'40px'} style={{borderRadius:'50%'}} className='mx-2' src={userDp==""?"https://static.vecteezy.com/system/resources/previews/008/302/462/original/eps10-grey-user-icon-or-logo-in-simple-flat-trendy-modern-style-isolated-on-white-background-free-vector.jpg":""} alt="img" />
+              <button onClick={()=>setDropDownStatus(!dropDownStatus)} className=' bg-white px-3 py-2 text-sm  text-gray-900 shadow-xs hover:bg-gray-200'>
+                 <img width={'40px'} height={'40px'} style={{borderRadius:'50%'}} className='mx-2' src={userDp==""?"https://static.vecteezy.com/system/resources/previews/008/302/462/original/eps10-grey-user-icon-or-logo-in-simple-flat-trendy-modern-style-isolated-on-white-background-free-vector.jpg":userDp.startsWith("https://lh3.googleusercontent.com/")?userDp:"https://static.vecteezy.com/system/resources/previews/008/302/462/original/eps10-grey-user-icon-or-logo-in-simple-flat-trendy-modern-style-isolated-on-white-background-free-vector.jpg"} alt="userimg" />
               </button>
                 
               {
