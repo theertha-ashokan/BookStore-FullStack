@@ -22,13 +22,18 @@ export const googleLoginAPI = async (reqBody)=>{
 }
 
 
+//-------------------------------- authorised user API call-user ------------------------------------------------------ 
+//upload book - called by profile component
+export const addBookAPI = async (reqBody,reqHeader)=>{
+  return await  commonAPI("POST",`${SERVERURL}/add-book`,reqBody,reqHeader)
+}
 
 // homepage books api
 // all caree api
 // authorised user api- user
    //view all books
    //view single books
-    //upload book
+    
     // profile update
     // view selled books
     // purchased books
