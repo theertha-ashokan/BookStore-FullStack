@@ -23,8 +23,8 @@ export const getHomeBooksAPI = async ()=>{
 
 //authorised users api - user
 //view all books - call from all books when page starts
-export const getAllBooksAPI = async (reqHeader)=>{
-  return await  commonAPI("GET",`${SEVERURL}/all-books`,{},reqHeader)
+export const getAllBooksAPI = async (search,reqHeader)=>{
+  return await  commonAPI("GET",`${SEVERURL}/all-books?search=${search}`,{},reqHeader)
 }
 //view single book - called by view component.
 export const getSingleBookAPI = async (bookId,reqHeader)=>{

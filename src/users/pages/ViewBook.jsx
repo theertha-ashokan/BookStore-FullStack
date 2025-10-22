@@ -8,7 +8,7 @@ import { Link, useParams } from 'react-router-dom'
 import { getSingleBookAPI } from '../../services/allAPI'
 import { ToastContainer,toast } from 'react-toastify'
 import { useEffect } from 'react'
-import SERVERURL from '../../Services/serverURL'
+import SERVERURL from '../../services/serverURL'
 
 
 
@@ -78,7 +78,7 @@ function ViewBook() {
                   </p>
                 </div>
                 <div className='flex justify-end'>
-                      <Link to={'/allbooks'} className='bg-blue-900 text-white p-2 rounded'><FontAwesomeIcon icon={faBackward} />Back</Link>
+                      <Link to={'/all-books'} className='bg-blue-900 text-white p-2 rounded'><FontAwesomeIcon icon={faBackward} />Back</Link>
                       <button className='bg-green-900 text-white ms-5 p-2 rounded'>Buy {book?.discountPrice}</button>
                 </div>
             </div>
