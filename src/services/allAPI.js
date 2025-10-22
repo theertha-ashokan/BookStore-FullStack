@@ -1,48 +1,47 @@
+//guest users
+
 import commonAPI from "./commonAPI"
-import SERVERURL from "./serverURL"
+import SEVERURL from "./serverURL"
 
-//guest user
-
-// register api  - called by auth component by register button,
-//  clicked,content-type :"Application/json"
-  export const registerAPI = async (reqBody)=>{
-   console.log(reqBody);
-   
-     return await  commonAPI("POST",`${SERVERURL}/register`,reqBody)
-  }
-
-// login api
+//register api called by Auth component when register button clicked,By default -content-type:"application/json"
+export const registerAPI = async (reqBody)=>{
+  return await  commonAPI("POST",`${SEVERURL}/register`,reqBody)
+}
+//login api
 export const loginAPI = async (reqBody)=>{
-  return await  commonAPI("POST",`${SERVERURL}/login`,reqBody)
+  return await  commonAPI("POST",`${SEVERURL}/login`,reqBody)
+}
+//google-login api
+export const googleloginAPI = async (reqBody)=>{
+  return await  commonAPI("POST",`${SEVERURL}/google-login`,reqBody)
+}
+//home page books api 
+export const getHomeBooksAPI = async ()=>{
+  return await  commonAPI("GET",`${SEVERURL}/home-books`)
+}
+// all career api
+
+//authorised users api - user
+//view all books - call from all books when page starts
+export const getAllBooksAPI = async (reqHeader)=>{
+  return await  commonAPI("GET",`${SEVERURL}/all-books`,{},reqHeader)
+}
+//view single book - called by view component.
+export const getSingleBookAPI = async (bookId,reqHeader)=>{
+  return await  commonAPI("GET",`${SEVERURL}/books/${bookId}/view`,{},reqHeader)
 }
 
-// google login api
-export const googleLoginAPI = async (reqBody)=>{
-  return await  commonAPI("POST",`${SERVERURL}/google-login`,reqBody)
-}
-
-
-//-------------------------------- authorised user API call-user ------------------------------------------------------ 
-//upload book - called by profile component
+//upload single book
 export const addBookAPI = async (reqBody,reqHeader)=>{
-  return await  commonAPI("POST",`${SERVERURL}/add-book`,reqBody,reqHeader)
+  return await  commonAPI("POST",`${SEVERURL}/add-book`,reqBody,reqHeader)
 }
+//profile update
+//view selled book
+//purchased books
+//approved books
 
-// homepage books api
-// all caree api
-// authorised user api- user
-   //view all books
-   //view single books
-    
-    // profile update
-    // view selled books
-    // purchased books
-     // approve books
-
-
-// authorised api- admin
-   //add career
-    // update admin
-    // list users
-    // approve books
-       
+//authorised users api - admin
+//add carreer
+//update admin
+//list users
+//approve books

@@ -1,103 +1,102 @@
-import React from 'react'
-import Header from "../components/Header"
+import React, { useEffect, useState } from 'react'
+import Header from '../components/Header'
 import Footer from '../../components/Footer'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
+import { getHomeBooksAPI } from '../../services/allAPI'
+
+
 
 
 function Home() {
+  const [homeBooks,setHomeBooks] = useState([])
+
+useEffect(()=>{
+getHomeBooks()
+},[])
+
+console.log(homeBooks);
+
+
+const getHomeBooks = async ()=>{
+  try{
+    const result = await getHomeBooksAPI()
+    if(result.status == 200){
+      setHomeBooks(result.data)
+    }
+  }catch(err){
+    console.log(err);
+    
+  }
+}
   return (
-    <>
+    <div>
       <Header />
-      {/* Landing section */}
-      <div
-        className="relative flex flex-col h-screen justify-center items-center text-white"
-        style={{
-          backgroundImage: "url('/homebg-img.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        {/* Overlay layer just for opacity */}
-        <div
-          className="absolute inset-0"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-        ></div>
+      {/* landing */}
+      <div >
+        <div style={{ height: "500px" }} className="flex h-screen flex-col justify-center items-center bg-[url(./homebg-img.jpg)] bg-cover bg-center text-white">
+          <div style={{ height: "500px", backgroundColor: "rgba(0,0,0,0.5)" }} className='w-full flex flex-col justify-center items-center'>
+            <h1 className='text-5xl font-bold'>Wonderful Gifts</h1>
+            <p>Give your family and friends a book</p>
+            <div className='mt-9 relative'>
+              <input type="text" className='bg-white text-gray-500 p-2 rounded-full w-100 focus:outline-0 ' placeholder='Search Books' />
+              <button
 
-        {/* Content */}
-        <h1 className="relative text-5xl font-bold drop-shadow-lg">Wonderful Gifts</h1>
-        <p className="relative">Give Your Family And Friends a Book</p>
-
-        <div className="relative mt-9 w-100">
-          <input
-            type="text"
-            placeholder="Search Books"
-            className="text-center bg-white text-black rounded-full w-full py-1 pr-10 focus:outline-none relative"
-          />
-          <FontAwesomeIcon
-            icon={faMagnifyingGlass}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-600 hover:text-red-500 cursor-pointer"
-          />
+                className="absolute right-3 top-1/2 -translate-y-1/2  text-blue-400"
+              >
+                <FontAwesomeIcon icon={faMagnifyingGlass} />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-
-      {/* Arrival section */}
-      <section className="md:px-40 p-5 flex flex-col justify-center items-center">
-  <h1 className="text-2xl font-bold">NEW ARRIVAL</h1>
-  <h1 className="text-3xl text-center">Explore Our Latest Collection</h1>
-
-  {/* Responsive grid */}
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full mt-5">
-    <div className="p-3">
-      <div className="shadow-lg rounded-lg p-3 hover:scale-105 transition-transform duration-300">
-        <img
-          src="https://tse1.mm.bing.net/th/id/OIP.UfjypUKjf_hbbjiUKSCqBQAAAA?pid=Api&P=0&h=180"
-          alt="img"
-          className="w-full h-64 object-cover rounded-md"
-        />
-        <div className="p-5 flex flex-col justify-center items-center mt-4">
-          <p className="text-blue-700">Author</p>
-          <p className="text-blue-700">Book Title</p>
-          <p className="font-semibold">$400</p>
+      {/* arrival */}
+      <section className='md:px-40 p-5 flex flex-col justify-center items-center'>
+        <h1 className='text-2xl font-bold'>NEW ARRIVALS</h1>
+        <h1 className='text-3xl'>EXPLORE OUR LATEST COLLECTIONS</h1>
+        <div className="md:grid grid-cols-4 w-full mt-5">
+          
+            {
+              homeBooks.length>0?
+              homeBooks?.map((books,index)=>(
+                <div className="shadow p-3 ms-3">
+              <img width={"!00%"} height={"300px"} src={books.imageUrl
+} alt="book" />
+              <div className="flex flex-col justify-center items-center">
+                <p className="text-blue-700 font-bold">{books.author}</p>
+                <p className='text-center' >{books.title}</p>
+                <p>{books.price}</p>
+              </div>
+            </div>
+              ))
+              :
+              <p>Loading...</p>
+            }
+          
         </div>
-      </div>
-    </div>
-  </div>
-
-
-  {/* Button */}
-  <div className="text-center py-5">
-    <Link
-      to="/all-books"
-      className="bg-blue-500 hover:bg-blue-600 px-6 py-2 rounded-lg text-white font-semibold shadow-md transition-colors duration-300"
-    >
-      Explore More
-    </Link>
-  </div>
-     </section>
-
-
-      {/* Author section */}
-       <section className="md:grid grid-cols-2 my-5 gap-6 md:px-40 p-5">
-          <div className="text-center">
-            <h1 className='text-lg font-medium'>FEATURED AUTHORS</h1>
-            <h1 className='text-lg'>Captivates with every word</h1>
-            <p className='text-justify my-5'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minima dolorum facilis, harum perferendis accusantium distinctio eligendi corporis possimus velit aut, illo dolor. Molestiae perspiciatis non delectus? Porro in assumenda ex.
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minima dolorum facilis, harum perferendis accusantium distinctio eligendi corporis possimus velit aut, illo dolor. Molestiae perspiciatis non delectus? Porro in assumenda ex.
-            </p>
-             <p className='text-justify my-5'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minima dolorum facilis, harum perferendis accusantium distinctio eligendi corporis possimus velit aut, illo dolor. Molestiae perspiciatis non delectus? Porro in assumenda ex.
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minima dolorum facilis, harum perferendis accusantium distinctio eligendi corporis possimus velit aut, illo dolor. Molestiae perspiciatis non delectus? Porro in assumenda ex.
-             </p>
-          </div>
-          <div className='p-5'>
-            <img className='w-90' height={"300px"} src="https://images.squarespace-cdn.com/content/v1/6091c3e4f5f6071721c43f77/8722ad5e-1398-445d-afdb-30c7bd402a59/DSC06581.jpg" alt="" />
-          </div>
+        <div className='text-center my-5'>
+          <Link to='/all-books' className='bg-blue-600 p-3 text-white'>Explore More...</Link>
+        </div>
       </section>
-      
-      {/* Testimony section */}
-
-<section className="md:px-40 p-5 flex flex-col justify-center items-center text-center">
+      {/* Author */}
+      <section className="md:grid grid-cols-2 my-5 gap-6 md:px-40 p-5">
+        <div className="text-center">
+          <h1 className='text-lg font-medium'>FEATURED AUTHORS</h1>
+          <h1 className='text-lg'>Captivates with every word</h1>
+          <p className='text-justify my-5'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minima dolorum facilis, harum perferendis accusantium distinctio eligendi corporis possimus velit aut, illo dolor. Molestiae perspiciatis non delectus? Porro in assumenda ex.
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minima dolorum facilis, harum perferendis accusantium distinctio eligendi corporis possimus velit aut, illo dolor. Molestiae perspiciatis non delectus? Porro in assumenda ex.
+          </p>
+          <p className='text-justify my-5'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minima dolorum facilis, harum perferendis accusantium distinctio eligendi corporis possimus velit aut, illo dolor. Molestiae perspiciatis non delectus? Porro in assumenda ex.
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minima dolorum facilis, harum perferendis accusantium distinctio eligendi corporis possimus velit aut, illo dolor. Molestiae perspiciatis non delectus? Porro in assumenda ex.
+          </p>
+        </div>
+        <div className='p-5'>
+          <img className='w-90' height={"300px"} src="https://images.squarespace-cdn.com/content/v1/6091c3e4f5f6071721c43f77/8722ad5e-1398-445d-afdb-30c7bd402a59/DSC06581.jpg" alt="" />
+        </div>
+      </section>
+      {/* Testimonial */}
+      <section className="md:px-40 p-5 flex flex-col justify-center items-center text-center">
         <h1 className="text-2xl font-bold">TESTIMONIALS</h1>
         <h1 className="text-3xl">SEE WHAT OTHERS ARE SAYING</h1>
 
@@ -117,8 +116,9 @@ function Home() {
           </p>
         </div>
       </section>
+
       <Footer />
-    </>
+    </div>
   )
 }
 

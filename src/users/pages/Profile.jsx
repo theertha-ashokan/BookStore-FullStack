@@ -1,20 +1,30 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import Footer from '../../components/Footer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleCheck, faSquarePlus } from '@fortawesome/free-regular-svg-icons'
-
+import { ToastContainer,toast } from 'react-toastify'
+import { addBookAPI } from '../../services/allAPI'
 
 function Profile() {
   const [sellbookStatus,setSellBookStatus] = useState(true)
   const [bookStatus,setBookStatus] = useState(false)
   const [purchaseStatus,setPurchaseBookStatus] = useState(false)
+  const [token,setToken] = useState("")
   const [bookDetails,setBookDetails] = useState({
     title:"",author:"",noOfPages:"",imageUrl:"",price:"",discountPrice:"",abstract:"",publisher:"",language:"",isbn:"",category:"",uploadImages:[]
   })
   console.log(bookDetails);
   const [preview,setPreview] = useState("")
   const [previewList,setPreviewList] = useState([])
+
+  useEffect(()=>{
+    if(sessionStorage.getItem("token")){
+        setToken(sessionStorage.getItem('token'))
+    }
+  },[])
+  console.log(token);
+  
 
   const handleUploadBookImage = (e)=>{
     // console.log(e.target.files[0]);
@@ -33,6 +43,63 @@ function Profile() {
     
     
   }
+
+  const handleReset = ()=>{
+    setBookDetails({
+    title:"",author:"",noOfPages:"",imageUrl:"",price:"",discountPrice:"",abstract:"",publisher:"",language:"",isbn:"",category:"",uploadImages:[]
+  })
+  setPreview("")
+  setPreviewList([])
+  }
+
+  const handleBookSubmit = async()=>{
+    const {title,author,noOfPages,imageUrl,price,discountPrice,abstract,publisher,language,isbn,category,uploadImages} = bookDetails
+    if(!title || !author || !noOfPages || !imageUrl || !price || !discountPrice || !abstract || !publisher || !language || !isbn || !category || uploadImages.length == 0){
+
+      toast.info("Please fill the form !!!")
+
+    }else{
+          const reqHeader = {
+            "Authorization":`Bearer ${token}`
+          }
+          const reqBody = new FormData()
+          for(let key in bookDetails){
+            if(key != "uploadImages"){
+                reqBody.append(key,bookDetails[key])
+            }else{
+                bookDetails.uploadImages.forEach(img=>{
+                  reqBody.append("uploadImages",img)
+                } )
+            }
+          }
+
+          try{
+
+            const result = await addBookAPI(reqBody,reqHeader)
+            console.log(result);
+            if(result.status == 401){
+              toast.warning(result.response.data)
+              handleReset()
+            }else if(result.status == 200){
+              toast.success("Book Added SuccessFully")
+              handleReset()
+            }else{
+              toast.error('Something went wrong')
+              handleReset()
+            }
+            
+
+          }
+          catch(err){
+            console.log(err);
+            
+          }
+
+
+    }
+  }
+
+  
   
   return (
     <div>
@@ -197,8 +264,8 @@ function Profile() {
                       </div>
                   </div>
                   <div className='p-3  w-full md:flex justify-end  mt-5'>
-                    <button className='py-2 px-3 rounded bg-gray-600 text-white'>Reset</button>
-                  <button className='py-2 px-3 ms-2 rounded bg-gray-600 text-white'>Submit</button>
+                    <button onClick={handleReset} className='py-2 px-3 rounded bg-gray-600 text-white'>Reset</button>
+                  <button onClick={handleBookSubmit} className='py-2 px-3 ms-2 rounded bg-gray-600 text-white'>Submit</button>
                   </div>
 
                 </div>
@@ -259,6 +326,19 @@ function Profile() {
           }
        </div>
       <Footer/>
+      <ToastContainer
+      position="top-right"
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick={false}
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="colored"
+      
+      />
       </div>
   )
 }
