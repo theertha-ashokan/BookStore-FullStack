@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Header from '../components/Header'
 import Footer from '../../components/Footer'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Link } from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify'
 import { getAllBooksAPI } from '../../services/allAPI'
+import { searchBookContext } from '../../cotextAPI/ContextShare'
 
 function AllBooks() {
   const [listStatus, setListstatus] = useState(false)
@@ -13,8 +14,8 @@ function AllBooks() {
   const [books, setBooks] = useState([])
   const [tempbooks, setTempBooks] = useState([])
   const [allCategories,setAllCategories] = useState([])
-  const [searchKey,setSearchKey] = useState("")
-  console.log(books);
+  const {searcKey,setSearchKey} = useContext(searchBookContext)
+  // console.log(books);
 
 
 
@@ -24,14 +25,14 @@ function AllBooks() {
       setToken(userToken)
       getAllBooks(userToken)
     }
-  }, [searchKey])
+  }, [searcKey])
 
     const getAllBooks = async (userToken) => {
       const reqHeader = {
       "Authorization": `Bearer ${userToken}`
     }
     try {
-      const result = await getAllBooksAPI(searchKey,reqHeader)
+      const result = await getAllBooksAPI(searcKey,reqHeader)
       if (result.status == 200) {
         setBooks(result.data)
         setTempBooks(result.data)
@@ -70,7 +71,7 @@ function AllBooks() {
             <div className="flex justify-center md:items-center flex-col my-5 p-3">
               <h1 className='text-3xl'>Collections</h1>
               <div className="flex">
-                <input type="text" className="p-2 text-black rounded border border-gray-200 w-100 placeholder-gray-600" placeholder='Search by Title'onChange={e=>setSearchKey(e.target.value)} />
+                <input type="text" value={searcKey} className="p-2 text-black rounded border border-gray-200 w-100 placeholder-gray-600" placeholder='Search by Title'onChange={e=>setSearchKey(e.target.value)} />
                 <button className='bg-blue-500 w-20'>Search</button>
               </div>
             </div>
@@ -87,7 +88,7 @@ function AllBooks() {
               allCategories?.length>0 && 
                 allCategories?.map((category,index)=>(
                   <div key={index} className='mt-3'>
-              <input type="radio" id={category} name='filter' onClick={()=>filterBooks(category)}/>
+              <input  type="radio" id={category} name='filter' onClick={()=>filterBooks(category)}/>
               <label className='ms-3' htmlFor={category}>{category}</label>
             </div>
                 ))
