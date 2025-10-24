@@ -4,7 +4,8 @@ import Footer from '../../components/Footer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleCheck, faSquarePlus } from '@fortawesome/free-regular-svg-icons'
 import { ToastContainer, toast } from 'react-toastify'
-import { addBookAPI } from '../../services/allAPI'
+import { addBookAPI, getAllUserPurchasedBooksAPI, getAllUserUploadBooksAPI, removeUserUploadBookAPI } from '../../services/allAPI'
+import Edit from '../components/Edit'
 
 function Profile() {
   const [sellbookStatus, setSellBookStatus] = useState(true)
@@ -14,16 +15,91 @@ function Profile() {
   const [bookDetails, setBookDetails] = useState({
     title: "", author: "", noOfPages: "", imageUrl: "", price: "", discountPrice: "", abstract: "", publisher: "", language: "", isbn: "", category: "", uploadImages: []
   })
-  console.log(bookDetails);
+  // console.log(bookDetails);
   const [preview, setPreview] = useState("")
   const [previewList, setPreviewList] = useState([])
+  const [userBooks,setUserBooks] =useState([])
+  const [deleteBookStatus,setDeleteBookStatus] = useState(false)
+  const [purchaseBook,setPurchaseBook] = useState([])
+  const [userName, setUserName] = useState("")
+  const [userDp, setUserDp] = useState("")
+  // console.log(userBooks);
+
 
   useEffect(() => {
     if (sessionStorage.getItem("token")) {
       setToken(sessionStorage.getItem('token'))
+      const user = JSON.parse(sessionStorage.getItem("user"))
+      setUserName(user.username)
+      setUserDp(user.profile)
     }
   }, [])
-  console.log(token);
+
+
+  useEffect(()=>{
+     if(bookStatus == true){
+      getAllUserBooks()
+     }else if(purchaseStatus==true){
+      getAllUserBoughtBooks()
+     }
+  },[bookStatus,deleteBookStatus,purchaseBook])
+
+
+ const getAllUserBoughtBooks = async()=>{
+  const reqHeader = {
+     "Authorization":`Bearer ${token}`
+  }
+  try{
+    const result = await  getAllUserPurchasedBooksAPI(reqHeader)
+    if(result.status==200){
+      setPurchaseBook(result.data)
+    }else{
+      console.log(result);
+      
+    }
+  }catch(err){
+    console.log(err);
+    
+  }
+ }
+
+
+
+  const removeBook = async (bookID)=>{
+     const reqHeader ={
+      "Authorization":`Bearer ${token}`
+    }
+    try{
+      const result = await removeUserUploadBookAPI(bookID,reqHeader)
+      if(result.status==200){
+        toast.success(result.data)
+        setDeleteBookStatus(true)
+      }else{
+        console.log(result);
+        
+      }
+    }catch(err){
+      console.log(err);
+      
+    }
+  }
+
+
+   const getAllUserBooks = async()=>{
+    const reqHeader ={
+      "Authorization":`Bearer ${token}`
+    }
+    try{
+      const result = await getAllUserUploadBooksAPI(reqHeader)
+      if(result.status==200){
+        setUserBooks(result.data)
+      }else{
+        console.log(result);
+      }
+    }catch(err){
+      console.log(err); 
+    }
+   }
 
 
   const handleUploadBookImage = (e) => {
@@ -98,20 +174,23 @@ function Profile() {
 
 
 
+
+
   return (
     <div>
       <Header />
       <div className='bg-black' style={{ height: '200px' }}></div>
       <div className="bg-white p-3 " style={{ width: '230px', height: '230px', borderRadius: '50%', marginLeft: '70px', marginTop: '-130px' }}>
-        <img style={{ width: '200px', height: '200px', borderRadius: '50%' }} src="https://www.366icons.com/media/01/profile-avatar-account-icon-16699.png" alt="profile" />
+        <img style={{ width: '200px', height: '200px', borderRadius: '50%' }} src={userDp==""? "https://cdn-icons-png.flaticon.com/512/149/149071.png" : userDp}alt="profile" />
       </div>
       <div className='md:flex justify-between px-30 mt-5'>
         <div className='flex justify-center items-center'>
-          <h1 className='font-bold text-2xl'>Username</h1>
+          <h1 className='font-bold text-2xl'>{userName}</h1>
           <FontAwesomeIcon icon={faCircleCheck} className='text-blue-400  ms-3' />
         </div>
-        <div>Edit</div>
+        <Edit/>
       </div>
+      
       <p className='md:px-20 px-5 my-5 text-justify'>
         Lorem ipsum dolor sit amet consectetur, adipisicing elit. Architecto dolorum ipsum natus nobis beatae laborum et facilis id dicta? Obcaecati et doloremque rerum natus rem explicabo impedit soluta error sint.
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus, illum eos! Vero sit, provident ducimus molestiae possimus nulla quisquam rerum mollitia consequuntur odio, tenetur praesentium debitis dicta nihil labore facere.
@@ -122,6 +201,8 @@ function Profile() {
           <p onClick={() => { setSellBookStatus(false); setPurchaseBookStatus(false); setBookStatus(true) }} className={bookStatus ? 'text-blue-500 p-4 border-gray-200 border-t border-l border-r cursor-pointer' : 'p-4 border-gray-200 cursor-pointer border-b'}>Book Status</p>
           <p onClick={() => { setSellBookStatus(false); setPurchaseBookStatus(true); setBookStatus(false) }} className={purchaseStatus ? 'text-blue-500 p-4 border-gray-200 border-t border-l border-r cursor-pointer' : 'p-4 border-gray-200 cursor-pointer border-b'}>Purchase History</p>
         </div>
+
+{/* sell books status */}
         {
           sellbookStatus &&
           <div>
@@ -268,59 +349,81 @@ function Profile() {
             </div>
           </div>
         }
-        {
-          bookStatus &&
-          <div className='p-10 my-20 shadow rounded'>
-            <div className="p-5 rounded mt-4 bg-gray-300">
+
+   {/* book status */}
+       {
+        bookStatus &&
+        <div className='p-10 my-20 shadow rounded'>
+            {/* duplicate div accordign to book  */}
+           {  userBooks?.length>0 ? 
+           userBooks?.map((item,index)=>(
+             <div key={index} className="p-5 rounded mt-4 bg-gray-100">
               <div className="md:grid grid-cols-[3fr_1fr]">
-                <div className='px-4'>
-                  <h1 className="text-2xl">Book Title</h1>
-                  <h2 className='text-2xl'> Author</h2>
-                  <h3 className="text-lg text-blue-500">$ 300</h3>
-                  <p className='text-justify'>
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corporis, repellendus suscipit. Earum, consequuntur mollitia dolore porro in id, quas expedita suscipit sit quaerat, maxime iste ad obcaecati enim at iure.
-                  </p>
-                  <div className='flex'>
-                    <img src="https://psdstamps.com/wp-content/uploads/2022/04/round-pending-stamp-png.png" width={"150px"} height={'150px'} alt="" />
-                    <img src="https://pngimg.com/uploads/approved/approved_PNG13.png" width={"100px"} height={'100px'} alt="" />
+                <div className="px-4">
+                  <h1 className="text-2xl">{item.title}</h1>
+                  <h2 className="text-xl">{item.author}</h2>
+                  <h3 className="text-lg text-blue-500">{item.price}</h3>
+                  <p className="text-justify">{item.abstract}</p>
+                  <div className="flex mt-3">
+
+                    {item?.status=="pending" ?<img width={'150px'} height={'150px'} src="https://psdstamps.com/wp-content/uploads/2022/04/round-pending-stamp-png.png" alt="pending icon" />:item?.status=="approved"?
+                    <img width={'100px'} height={'100px'} src="https://pngimg.com/uploads/approved/approved_PNG1.png" alt="approved icon" />:
+                     <img width={'100px'} height={'100px'} src="https://png.pngtree.com/png-clipart/20230427/original/pngtree-rejected-icon-png-image_9115832.png" alt="approved icon" />}
+
                   </div>
                 </div>
-                <div className='px-4 mt-4 md:mt-0'>
-                  <img className='w-full' src="https://www.creativindiecovers.com/wp-content/uploads/2012/02/9780718155209.jpg" alt="book" />
-                  <button className='bg-red-700 text-white ms-5 px-3 py-1 mt-2 rounded'>Delete</button>
+
+                <div className="px-4 mt-4 md:mt-0">
+                  <img  className="w-full" src={item.imageUrl} alt="book" />
+                  <div className="mt-4 flex justify-end">
+                    <button onClick={()=>{removeBook(item?._id)}} className="py-2 px-3 rounded bg-red-600 text-white ms-3 hover:bg-white hover:border hover:text-red-600 hover:border-red-600">Delete</button>
+                  </div>
                 </div>
 
               </div>
             </div>
+           ))
+           :
+  <p>no user books</p>
+            }
+        </div>
+      }
 
-          </div>
-        }
-        {
-          purchaseStatus &&
-          <div className='p-10 my-20 shadow rounded'>
-            <div className="p-5 rounded mt-4 bg-gray-300">
+  {/* purchase book */}
+      {/* purchase history*/}
+      {
+        purchaseStatus &&
+        <div className='p-10 my-20 shadow rounded'>
+            {/* duplicate div accordign to book  */}
+            { purchaseBook?.length>0? 
+              purchaseBook?.map((item,index)=>{
+             <div className="p-5 rounded mt-4 bg-gray-100">
               <div className="md:grid grid-cols-[3fr_1fr]">
-                <div className='px-4'>
-                  <h1 className="text-2xl">Book Title</h1>
-                  <h2 className='text-2xl'> Author</h2>
-                  <h3 className="text-lg text-blue-500">$ 300</h3>
-                  <p className='text-justify'>
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corporis, repellendus suscipit. Earum, consequuntur mollitia dolore porro in id, quas expedita suscipit sit quaerat, maxime iste ad obcaecati enim at iure.
-                  </p>
-                  <div className='flex'>
-                    <img src="http://www.onlygfx.com/wp-content/uploads/2017/12/sold-stamp-2.png" width={"150px"} height={'150px'} alt="" />
-
+                <div className="px-4">
+                  <h1 className="text-2xl">{item.title}</h1>
+                  <h2 className="text-xl">{item.author}</h2>
+                  <h3 className="text-lg text-blue-500">{item.price}</h3>
+                  <p className="text-justify">{item.abstract}</p>
+                  <div className=" mt-3">
+                    <img width={'150px'} height={'150px'} src="https://www.psdstamps.com/wp-content/uploads/2022/04/round-sold-stamp-png.png" alt="sold icon" />
                   </div>
                 </div>
-                <div className='px-4 mt-4 md:mt-0'>
-                  <img className='w-full' src="https://www.creativindiecovers.com/wp-content/uploads/2012/02/9780718155209.jpg" alt="book" />
+                <div className="px-4 mt-4 md:mt-0">
+                  <img className="w-full" src="https://images.pexels.com/photos/19095295/pexels-photo-19095295.jpeg?cs=srgb&dl=pexels-esrakorkmaz-19095295.jpg&fm=jpg" alt="book" />
+                  
                 </div>
-
               </div>
             </div>
+              })
+            
+            :
+            <p>Books are not purchased yet</p>
+            }
 
-          </div>
-        }
+
+        </div>
+      }
+      
       </div>
       <Footer />
       <ToastContainer

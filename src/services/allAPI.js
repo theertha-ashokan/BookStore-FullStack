@@ -19,9 +19,10 @@ export const googleloginAPI = async (reqBody)=>{
 export const getHomeBooksAPI = async ()=>{
   return await  commonAPI("GET",`${SEVERURL}/home-books`)
 }
-// all career api
 
+// all career api
 //authorised users api - user
+
 //view all books - call from all books when page starts
 export const getAllBooksAPI = async (search,reqHeader)=>{
   return await  commonAPI("GET",`${SEVERURL}/all-books?search=${search}`,{},reqHeader)
@@ -35,6 +36,26 @@ export const getSingleBookAPI = async (bookId,reqHeader)=>{
 export const addBookAPI = async (reqBody,reqHeader)=>{
   return await  commonAPI("POST",`${SEVERURL}/add-book`,reqBody,reqHeader)
 }
+
+// All user upload books-profile
+export const getAllUserUploadBooksAPI = async (reqHeader)=>{
+  return await  commonAPI("GET",`${SEVERURL}/user-books`,{},reqHeader)
+}
+
+// All user purchased  books-profile
+export const getAllUserPurchasedBooksAPI = async (reqHeader)=>{
+  return await  commonAPI("GET",`${SEVERURL}/user-bought-books`,{},reqHeader)
+}
+
+// All user purchased  books-profile
+export const removeUserUploadBookAPI = async (bookId,reqHeader)=>{
+  return await  commonAPI("DELETE",`${SEVERURL}/user-books/${bookId}/remove`,{},reqHeader)
+}
+
+
+
+
+
 //profile update
 //view selled book
 //purchased books
