@@ -2,8 +2,10 @@ import { faFacebook, faInstagram, faTwitter } from '@fortawesome/free-brands-svg
 import { faAddressCard, faCircleUser } from '@fortawesome/free-regular-svg-icons'
 import { faBars, faPowerOff } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import SERVERURL from '../../services/serverURL'
+import { userUpdateContext } from '../../cotextAPI/ContextShare'
 
 
 function Header() {
@@ -12,6 +14,7 @@ function Header() {
   const [userDp,setUserDp] = useState("")
   const [dropDownStatus,setDropDownStatus] =useState(false)
   const navigate = useNavigate()
+  const {userEditResponse} = useContext(userUpdateContext)
 
   useEffect(()=>{
     if(sessionStorage.getItem("token")){
@@ -20,7 +23,7 @@ function Header() {
       const user = JSON.parse(sessionStorage.getItem("user"))
       setUserDp(user.profile)
     }
-  },[token])
+  },[token,userEditResponse])
 
   // logout
   const logout = ()=>{
@@ -51,7 +54,7 @@ function Header() {
           <div className='relative inline-block text-left'>
            
               <button onClick={()=>setDropDownStatus(!dropDownStatus)} className=' bg-white px-3 py-2 text-sm  text-gray-900 shadow-xs hover:bg-gray-200'>
-                 <img width={'40px'} height={'40px'} style={{borderRadius:'50%'}} className='mx-2' src={userDp==""?"https://static.vecteezy.com/system/resources/previews/008/302/462/original/eps10-grey-user-icon-or-logo-in-simple-flat-trendy-modern-style-isolated-on-white-background-free-vector.jpg":userDp.startsWith("https://lh3.googleusercontent.com/")?userDp:"https://static.vecteezy.com/system/resources/previews/008/302/462/original/eps10-grey-user-icon-or-logo-in-simple-flat-trendy-modern-style-isolated-on-white-background-free-vector.jpg"} alt="userimg" />
+                 <img width={'40px'} height={'40px'} style={{borderRadius:'50%'}} className='mx-2' src={userDp==""?"https://static.vecteezy.com/system/resources/previews/008/302/462/original/eps10-grey-user-icon-or-logo-in-simple-flat-trendy-modern-style-isolated-on-white-background-free-vector.jpg":userDp.startsWith("https://lh3.googleusercontent.com/")?userDp:`${SERVERURL}/uploads/${userDp}`} alt="userimg" />
               </button>
                 
               {
@@ -67,9 +70,8 @@ function Header() {
 
           </div>
          }
-
-         
         </div>
+
       </nav>
       {/* resposive code for mobile */}
       <nav className='bg-gray-900'>

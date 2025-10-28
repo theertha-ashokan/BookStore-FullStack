@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Header from '../components/Header'
 import Footer from '../../components/Footer'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -6,6 +6,9 @@ import { faCircleCheck, faSquarePlus } from '@fortawesome/free-regular-svg-icons
 import { ToastContainer, toast } from 'react-toastify'
 import { addBookAPI, getAllUserPurchasedBooksAPI, getAllUserUploadBooksAPI, removeUserUploadBookAPI } from '../../services/allAPI'
 import Edit from '../components/Edit'
+import SERVERURL from '../../services/serverURL'
+import { userUpdateContext } from '../../cotextAPI/ContextShare'
+
 
 function Profile() {
   const [sellbookStatus, setSellBookStatus] = useState(true)
@@ -23,6 +26,7 @@ function Profile() {
   const [purchaseBook,setPurchaseBook] = useState([])
   const [userName, setUserName] = useState("")
   const [userDp, setUserDp] = useState("")
+  const { userEditResponse} = useContext(userUpdateContext)
   // console.log(userBooks);
 
 
@@ -33,7 +37,7 @@ function Profile() {
       setUserName(user.username)
       setUserDp(user.profile)
     }
-  }, [])
+  }, [userEditResponse])
 
 
   useEffect(()=>{
@@ -181,7 +185,7 @@ function Profile() {
       <Header />
       <div className='bg-black' style={{ height: '200px' }}></div>
       <div className="bg-white p-3 " style={{ width: '230px', height: '230px', borderRadius: '50%', marginLeft: '70px', marginTop: '-130px' }}>
-        <img style={{ width: '200px', height: '200px', borderRadius: '50%' }} src={userDp==""? "https://cdn-icons-png.flaticon.com/512/149/149071.png" : userDp}alt="profile" />
+        <img style={{ width: '200px', height: '200px', borderRadius: '50%' }} src={userDp==""? "https://cdn-icons-png.flaticon.com/512/149/149071.png" : userDp.startsWith("https://lh3.googleusercontent.com/")?userDp:`${SERVERURL}/uploads/${userDp}`}alt="profile" />
       </div>
       <div className='md:flex justify-between px-30 mt-5'>
         <div className='flex justify-center items-center'>
@@ -368,7 +372,7 @@ function Profile() {
 
                     {item?.status=="pending" ?<img width={'150px'} height={'150px'} src="https://psdstamps.com/wp-content/uploads/2022/04/round-pending-stamp-png.png" alt="pending icon" />:item?.status=="approved"?
                     <img width={'100px'} height={'100px'} src="https://pngimg.com/uploads/approved/approved_PNG1.png" alt="approved icon" />:
-                     <img width={'100px'} height={'100px'} src="https://png.pngtree.com/png-clipart/20230427/original/pngtree-rejected-icon-png-image_9115832.png" alt="approved icon" />}
+                     <img width={'100px'} height={'100px'} src="https://cdn-icons-png.flaticon.com/512/6188/6188726.png" alt="sold icon" />}
 
                   </div>
                 </div>

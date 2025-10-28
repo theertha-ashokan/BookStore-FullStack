@@ -102,12 +102,14 @@ function AllBooks() {
 
                 </div>
               </div>
+
+              {/* books */}
               <div className="col-span-3">
                 <div className="md:grid grid-cols-4">
                   {
                     books.length > 0 ?
                       books?.map(book => (
-                        <div key={book?._id} className="shadow rounded p-3 mx-4">
+                        <div key={book?._id} className="shadow rounded p-3 mx-4" hidden={book?. status=='pending' || book?.status=='sold'}>
                           <img width={"100%"} height={"300px"} src={book?.imageUrl} alt="" />
                           <div className='flex flex-col justify-center items-center'>
                             <h1 className='text-center '>{book?.author.slice(0, 20)}</h1>

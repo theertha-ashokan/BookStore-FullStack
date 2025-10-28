@@ -50,11 +50,6 @@ function AdminDashBoard() {
             <div>pie chart </div>
           </div>
 
-
-
-
-
-
         </div>
       </div>
       <Footer />
