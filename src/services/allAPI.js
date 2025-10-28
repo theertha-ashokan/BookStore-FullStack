@@ -76,6 +76,11 @@ export const updateBookStatusAPI = async (reqBody, reqHeader) => {
   return await commonAPI("PUT", `${SERVERURL}/admin/book/approve`, reqBody, reqHeader)
 }
 
+//update admin
+//update admin
+export const updateAdminProfileAPI = async (reqBody,reqHeader)=>{
+  return await  commonAPI("PUT",`${SERVERURL}/admin-profile/edit`,reqBody,reqHeader)
+}
 
 //profile update
 //view selled book
@@ -84,6 +89,6 @@ export const updateBookStatusAPI = async (reqBody, reqHeader) => {
 
 //authorised users api - admin
 //add carreer
-//update admin
+
 
 //approve books
