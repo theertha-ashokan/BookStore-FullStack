@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import AdminSideBar from '../components/AdminSideBar'
 import Footer from '../../components/Footer'
 import AdminHeader from '../components/AdminHeader'
@@ -8,10 +8,11 @@ import { faPen, faUserPen } from '@fortawesome/free-solid-svg-icons'
 import { ToastContainer,toast } from 'react-toastify'
 import SERVERURL from '../../services/serverURL'
 import { updateAdminProfileAPI } from '../../services/allAPI'
+import { adminUpdateContext } from '../../cotextAPI/ContextShare'
 
 
 function SettingAdmin() {
-
+  const {adminEditResponse,setAdminEditResponse} = useContext(adminUpdateContext)
   const [userDetails,setUserDetails] = useState({username:"",password:"",cpassword:"",profile:"",role:""})
   const [token,setToken] = useState("")
   const [existingProfile,setExistingProfile] = useState("")
@@ -62,7 +63,7 @@ function SettingAdmin() {
                     toast.success("Profile updated successfully")
                     sessionStorage.setItem("user",JSON.stringify(result.data))
                     handleReset()
-                    //setUserEditResponse(result.data)
+                    setAdminEditResponse(result.data)
                 }else{
                     toast.error("Something went wrong")
                     console.log(result);
@@ -75,8 +76,7 @@ function SettingAdmin() {
                     toast.success("Profile updated successfully")
                     sessionStorage.setItem("user",JSON.stringify(result.data))
                     handleReset()
-                    
-                    //setUserEditResponse(result.data)
+                    setAdminEditResponse(result.data)
                 }else{
                     toast.error("Something went wrong")
                     console.log(result);
@@ -109,7 +109,7 @@ function SettingAdmin() {
                 <div className="bg-blue-200 md:mt-0 mt-5 rounded-lg flex flex-col justify-center items-center py-5  w-full max-w-[350px] aspect-[5/4] mx-auto " >
 
                   {/* Profile Picture with Edit Icon */}
-                  <div className="relative w-[100px] h-[100px]">
+                  <div className="relative w-[130px] h-[-130px]">
                     {/* Hidden File Input */}
                     <input type="file" id="adminpic" className="hidden" />
 
@@ -125,7 +125,7 @@ function SettingAdmin() {
                             <img className='' style={{width:"150px",height:'150px',borderRadius:'50%'}} src={preview?preview:`${SERVERURL}/uploads/${existingProfile}`} alt="profile" />
 
                         }
-                        <button className="bg-yellow-300   text-white py-3 px-4 rounded flex justify-center" style={{marginLeft:'75px',marginTop:'-20px',width:"30px",height:"30px"}}><FontAwesomeIcon icon={faPen}/></button>
+                        {/* <button className="bg-yellow-300   text-white py-3 px-4 rounded flex justify-center" style={{marginLeft:'75px',marginTop:'-20px',width:"30px",height:"30px"}}><FontAwesomeIcon icon={faPen}/></button> */}
                     </label>
 
                     {/* Edit Icon */}
@@ -138,7 +138,7 @@ function SettingAdmin() {
 
                   </div>
 
-
+           {/* input box */}
                   <form action="" className="w-full px-5  ">
                     <input
                       type="text"
