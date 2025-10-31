@@ -57,6 +57,13 @@ export const updateUserProfileAPI = async (reqBody,reqHeader)=>{
   return await  commonAPI("PUT",`${SERVERURL}/user-profile/edit/`,reqBody,reqHeader)
 }
 
+
+// get all job api
+export const getAllJobAPI = async (searchKey) => {
+    return await commonAPI("GET", `${SERVERURL}/all-jobs?search=${searchKey}`)
+}
+
+
 // Authorised user Api-admin------------------------------------------------------------------------------------------
 
 //list users -called by admin collection component
@@ -65,11 +72,9 @@ export const getAllUsersAPI = async (reqHeader)=>{
 }
 
 // LIST all books
-
 export const listAllBooksAPI = async (reqHeader)=>{
   return await  commonAPI("GET",`${SERVERURL}/admin-all-books`,{},reqHeader)
 }
-
 
 /// approve books
 export const updateBookStatusAPI = async (reqBody, reqHeader) => {
@@ -81,13 +86,16 @@ export const updateAdminProfileAPI = async (reqBody,reqHeader)=>{
   return await  commonAPI("PUT",`${SERVERURL}/admin-profile/edit`,reqBody,reqHeader)
 }
 
-//profile update
-//view selled book
-//purchased books
-//approved books
+// add job
+export const addJobAPI = async (reqBody, reqHeader) => {
+    return await commonAPI("POST", `${SERVERURL}/admin-addjob`, reqBody, reqHeader)
+}
 
-//authorised users api - admin
-//add carreer
+// delete job
+export const removeJobAPI = async (jobId,reqHeader)=>{
+  return await  commonAPI("DELETE",`${SERVERURL}/job/${jobId}/remove`,{},reqHeader)
+}
 
 
-//approve books
+//get all userjobapi
+

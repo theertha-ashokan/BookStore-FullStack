@@ -48,7 +48,7 @@ function AdminSideBar() {
 </div>
 
 <div className="mt-3 flex items-center gap-x-2">
-  <Link to={'/Careers'} className="flex items-center gap-x-2">
+  <Link to={'/admin-careers'} className="flex items-center gap-x-2">
     <FontAwesomeIcon icon={faBagShopping} />
     <span>Careers</span>
   </Link>
