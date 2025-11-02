@@ -1,7 +1,66 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { ToastContainer,toast } from 'react-toastify'
+import { addJobAPI } from "../../services/allAPI";
+import { jobContext } from "../../cotextAPI/ContextShare";
+
 
 const AddJob = () => {
+const {addJobResponse,setAddJobResponse} = useContext(jobContext)
 const [canvas,setCanvas] =  useState(false)
+const [newJob,setNewJob] = useState({
+  title:"",location:"",jobType:"",salary:"",qualification:"",experience:"",description:""
+})
+
+
+// reset
+const handleReset = ()=>{
+  setNewJob({
+      title:"",location:"",jobType:"",salary:"",qualification:"",experience:"",description:""
+
+  })
+}
+
+// add job
+const HandleAddJob =async()=>{
+  const token = sessionStorage.getItem("token")
+  const {title,location,jobType,salary,qualification,experience,description} = newJob
+  if(!title || !location || !jobType || !salary || !qualification || !experience || !description){
+    toast.info("please fill the form completely")
+  }else if(token){
+    const reqHeader = {
+        "Authorization" : `Bearer ${token}`
+      }
+      // api call
+      try{
+         const result = await addJobAPI(newJob,reqHeader)
+         if(result.status==200){
+          // alert job add
+          toast.success("Current job added successfully....")
+          // reset data
+          handleReset()
+          // close modal
+          setCanvas(false)
+          // share data to context
+          setAddJobResponse(result.data)
+
+         }else if(result.status==409){
+           toast.warning(result.response.data)
+           handleReset()
+         }else{
+          toast.error("Somthing went wrong...")
+
+         }
+      }catch(err){
+        console.log(err);
+            toast.warning("Somthing went wrong...")
+
+      }
+
+  }else{
+    toast.warning("Somthing went wrong...")
+  }
+}
+
   return (
    <div>
     <div className='flex justify-end'>
@@ -21,36 +80,50 @@ const [canvas,setCanvas] =  useState(false)
             {/* Form fields */}
             <div className="p-4 space-y-3">
               <input
+              value={newJob.title}
+              onChange={e=>setNewJob({...newJob,title:e.target.value})}
                 type="text"
                 placeholder="Job Title"
                 className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none"
               />
               <input
+               value={newJob.location}
+              onChange={e=>setNewJob({...newJob,location:e.target.value})}
                 type="text"
                 placeholder="Location"
                 className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none"
               />
               <input
+               value={newJob.jobType}
+              onChange={e=>setNewJob({...newJob,jobType:e.target.value})}
                 type="text"
                 placeholder="Job Type"
                 className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none"
               />
               <input
+               value={newJob.salary}
+              onChange={e=>setNewJob({...newJob,salary:e.target.value})}
                 type="text"
                 placeholder="Salary"
                 className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none"
               />
               <input
+               value={newJob.qualification}
+              onChange={e=>setNewJob({...newJob,qualification:e.target.value})}
                 type="text"
                 placeholder="Qualification"
                 className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none"
               />
               <input
+               value={newJob.experience}
+              onChange={e=>setNewJob({...newJob,experience:e.target.value})}
                 type="text"
                 placeholder="Experience"
                 className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:outline-none"
               />
               <textarea
+               value={newJob.description}
+              onChange={e=>setNewJob({...newJob,description:e.target.value})}
                 placeholder="Description"
                 rows="3"
                 className="w-full rounded border border-gray-300 px-3 py-2 text-sm resize-none focus:outline-none"
@@ -59,16 +132,29 @@ const [canvas,setCanvas] =  useState(false)
     
             {/* Buttons */}
             <div className="flex justify-end gap-3 px-4 py-3 border-t border-gray-200">
-              <button className="px-4 py-2 rounded-md bg-orange-500 text-white text-sm hover:brightness-95">
+              <button onClick={handleReset} className="px-4 py-2 rounded-md bg-orange-500 text-white text-sm hover:brightness-95">
                 Reset
               </button>
-              <button className="px-4 py-2 rounded-md bg-green-600 text-white text-sm hover:brightness-95">
+              <button onClick={HandleAddJob} className="px-4 py-2 rounded-md bg-green-600 text-white text-sm hover:brightness-95">
                 Add
               </button>
             </div>
           </div>
         </div>
         }
+         <ToastContainer
+                      position="top-right"
+                      autoClose={5000}
+                      hideProgressBar={false}
+                      newestOnTop={false}
+                      closeOnClick={false}
+                      rtl={false}
+                      pauseOnFocusLoss
+                      draggable
+                      pauseOnHover
+                      theme="colored"
+                      
+                      />
    </div>
   );
 };

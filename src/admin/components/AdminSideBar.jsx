@@ -34,7 +34,7 @@ function AdminSideBar() {
      {/* side bar redirection-link */}
              <div className={listStatus ? 'block mt-2' : 'md:block hidden mt-2'}>
         <div className="mt-3 flex items-center gap-x-2">
-  <Link to={'/'} className="flex items-center gap-x-2">
+  <Link to={'/admin-dashboard'} className="flex items-center gap-x-2">
     <FontAwesomeIcon icon={faBook} />
     <span>Home</span>
   </Link>

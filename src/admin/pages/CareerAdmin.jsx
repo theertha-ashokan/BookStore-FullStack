@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import AdminHeader from '../components/AdminHeader'
 import Footer from '../../components/Footer'
 import AdminSidebar from '../components/AdminSideBar'
@@ -6,24 +6,48 @@ import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLocationDot, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
 import AddJob from '../components/AddJob'
-import { getAllJobAPI, removeJobAPI } from '../../services/allAPI'
+import { getAllApplicationAPI, getAllJobAPI, removeJobAPI } from '../../services/allAPI'
+import { jobContext } from '../../cotextAPI/ContextShare'
+import SERVERURL from '../../services/serverURL'
 
 
 const CareerAdmin = () => {
+    const {addJobResponse,setAddJobResponse} = useContext(jobContext)
     const [jobListStatus, setJobListStatus] = useState(true)
     const [listApplicationStatus, setListApplicationStatus] = useState(false)
     const [allJobs,setAllJobs] = useState([])
     const [searchKey,setSearchKey] = useState("")
     const [deleteJobResponse,setDeleteJobResponse] = useState({})
+    const [application,setApplication] = useState([])
 
-    console.log(allJobs);
+    console.log(application);
     
 
     useEffect(()=>{
       if(jobListStatus==true){
         getAllJobs()
+      }else if(listApplicationStatus==true){
+        getApplication()
       }
-    },[searchKey],deleteJobResponse)
+    },[searchKey,deleteJobResponse,addJobResponse,listApplicationStatus])
+
+     
+    const getApplication = async()=>{
+         const token = sessionStorage.getItem("token")
+    if(token){
+      const reqHeader = {
+        "Authorization" : `Bearer ${token}`
+      }
+    //   api call
+    const result = await getAllApplicationAPI(reqHeader)
+    if(result.status==200){
+        setApplication(result.data)
+    }else{
+        console.log(result);  
+    }
+    }
+}
+
  
     const getAllJobs = async ()=>{
       try{
@@ -163,18 +187,28 @@ const CareerAdmin = () => {
                                         <th className='p-3 text-center bg-blue-800 text-white border border-gray-500'>Resume</th>
                                     </tr>
                                 </thead>
+
                                 <tbody>
-                                    <tr>
-                                        <td className='text-center border border-gray-500 p-3'>1</td>
-                                        <td className='text-center border border-gray-500 p-3'>Frontend Developer</td>
-                                        <td className='text-center border border-gray-500 p-3'>Max Miller</td>
-                                        <td className='text-center border border-gray-500 p-3'>BCA</td>
-                                        <td className='text-center border border-gray-500 p-3'>max@gmail.com</td>
-                                        <td className='text-center border border-gray-500 p-3'>9876543210</td>
-                                        <td className='text-center border border-gray-500 p-3'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum omnis temporibus unde consectetur, aspernatur ab repellendus quasi at saepe eos.</td>
-                                        <td className='text-center border border-gray-500 p-3'><Link className='text-blue-600 underline'>Resume</Link></td>
+                                    {
+                                        application?.length>0?
+                                        application?.map((item,index)=>(
+                                            <tr key={item?._id}>
+                                        <td className='text-center border border-gray-500 p-3'>{index+1}</td>
+                                        <td className='text-center border border-gray-500 p-3'>{item?.jobTitle}</td>
+                                        <td className='text-center border border-gray-500 p-3'>{item?.fullname}</td>
+                                        <td className='text-center border border-gray-500 p-3'>{item?.qualification}</td>
+                                        <td className='text-center border border-gray-500 p-3'>{item?.email}</td>
+                                        <td className='text-center border border-gray-500 p-3'>{item?.phone}</td>
+                                        <td className='text-center border border-gray-500 p-3'>{item?.coverLetter}</td>
+                                        <td className='text-center border border-gray-500 p-3'><Link className='text-blue-600 underline' to={`${SERVERURL}/pdf/${item?.resume}`}target='_blank'>Resume</Link></td>
                                     </tr>
+                                        ))
+
+                                        :
+                                        <tr><td>No applications are available</td></tr>
+                                    }
                                 </tbody>
+
                             </table>
                         </div>
 

@@ -63,6 +63,11 @@ export const getAllJobAPI = async (searchKey) => {
     return await commonAPI("GET", `${SERVERURL}/all-jobs?search=${searchKey}`)
 }
 
+//add application-called by carrer component
+export const addApplicationAPI = async (reqBody,reqHeader)=>{
+  return await  commonAPI("POST",`${SERVERURL}/application/add`,reqBody,reqHeader)
+}
+
 
 // Authorised user Api-admin------------------------------------------------------------------------------------------
 
@@ -97,5 +102,8 @@ export const removeJobAPI = async (jobId,reqHeader)=>{
 }
 
 
-//get all userjobapi
+//list APPLICATION -called by career component
+export const getAllApplicationAPI = async (reqHeader)=>{
+  return await  commonAPI("GET",`${SERVERURL}/all-application`,{},reqHeader)
+}
 
